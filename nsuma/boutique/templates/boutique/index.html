@@ -1,0 +1,211 @@
+{% extends 'boutique.html' %}
+{% load static %}
+
+
+{% block filter %}
+<style>
+    .item-cat {
+        height: 100px;
+        width: 70px;
+        height: 70px;
+        border-radius: 50%;
+        overflow: hidden;
+        box-shadow: 0px 2px 4px rgb(0, 0, 0, 0.3);
+        position: relative;
+    }
+
+    .item-cat.col {
+        border: 2px solid #E2831D;
+    }
+
+    .sub-item-cat {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        background-color: rgb(0, 0, 0, 0.3);
+        z-index: 1;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-shadow: 0px 0px 9px #E2831D;
+    }
+
+    .lab-sub-cat {
+        font-size: 10px;
+        color: #fff;
+        font-weight: bold;
+    }
+</style>
+<div
+    style="box-shadow: 0px 2px 4px rgba(0,0,0,0.3); gap: 5px; height: 150px; border-bottom-left-radius: 20px;border-bottom-right-radius: 20px; width: 100%; display: flex;flex-direction: column;align-items: center;">
+    <div
+        style="align-items: center; margin-top: 10px; border-radius: 20px; width: 90%; padding: 12px;border: 1px solid #ccc;height: 20px;display: flex;gap: 10px;">
+        <div
+            style="height: 16px;width: 16px;border-radius: 50px;padding: 5px;display: flex;align-items: center;justify-content: center;">
+            <span><i class="fa-solid fa-magnifying-glass"></i></span>
+        </div>
+        <input style="border: none;border-right: 1px solid #ccc; outline: none; height: 100%; width: 100%;"
+            type="search">
+        <div style="display: flex;flex-direction: row;gap: 10px;">
+            <span><i class="fa-solid fa-filter"></i></span>
+        </div>
+    </div>
+    <div style=" margin-top: 10px; display: flex;flex-direction: row;justify-content: space-around;width: 100%;">
+        <div class="item-cat {% if type_doc == 'Accessoire' %}col{% endif %}"
+            onclick="window.location.href='?type_doc=Accessoire'">
+            <img style="position: absolute; width: 100%;height: 100%;" src="{% static 'imgs/accessoire.jpg' %}" alt="" srcset="">
+            <div class="sub-item-cat">
+                <div class="lab-sub-cat">Accessoire</div>
+            </div>
+        </div>
+        <div class="item-cat {% if type_doc == 'Alimentation' %}col{% endif %}"
+            onclick="window.location.href='?type_doc=Alimentation'">
+            <img style="position: absolute; width: 100%;height: 100%;" src="{% static 'imgs/aliment.jpg' %}" alt="" srcset="">
+            <div class="sub-item-cat">
+                <div class="lab-sub-cat">Alimentation</div>
+            </div>
+        </div>
+        <div class="item-cat {% if type_doc == 'Apareil' %}col{% endif %}"
+            onclick="window.location.href='?type_doc=Apareil'">
+            <img style="position: absolute; width: 100%;height: 100%;" src="{% static 'imgs/ap.jpg' %}" alt="" srcset="">
+            <div class="sub-item-cat">
+                <div class="lab-sub-cat">Apareil</div>
+            </div>
+        </div>
+        <div class="item-cat {% if type_doc == 'Cosmetique' %}col{% endif %}"
+            onclick="window.location.href='?type_doc=Cosmetique'">
+            <img style="position: absolute; width: 100%;height: 100%;" src="{% static 'imgs/cos.jpg' %}" alt=""
+                srcset="">
+            <div class="sub-item-cat">
+                <div class="lab-sub-cat">Cosmetique</div>
+            </div>
+        </div>
+    </div>
+
+</div>
+{% endblock %}
+
+
+{% block content %}
+<style>
+    .all-products {
+        width: 100%;
+        display: grid;
+        gap: 5px;
+        grid-template-columns: repeat(2, 1fr);
+        align-items: center;
+        justify-content: center;
+    }
+
+    .produit {
+        width: 195px;
+        height: 230px;
+        background-color: #fff;
+        box-shadow: 0px 2px 4px rgb(0, 0, 0, 0.3);
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        overflow: hidden;
+    }
+
+    .al-top {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .p-top {
+        height: 100%;
+        width: 100%;
+        position: relative;
+    }
+
+    .p-bottom {
+        height: 150px;
+        width: 100%;
+        padding-left: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+</style>
+
+<div class="al-top">
+    <div class="all-products">
+        {% for produit in produits %}
+        <div class="produit">
+
+            <div class="p-top">
+                <img src="{{produit.image.url}}" alt="" srcset=""
+                    style="width: 100%;height: 100%; position: absolute;left: 0;top: 0;object-fit: cover;">
+
+                <div onclick="addToCart(this)" data-url="{% url 'boutique:details' produit.slug %}"
+                    style=" color: #fff; font-size: 32px; align-items: center;justify-content: center;display: flex; position: absolute;left: 0;top: 0;width: 100%;background-color: rgb(0, 0, 0, 0.3);height: 100%;">
+                </div>
+
+                <div style="position: absolute;bottom: 10px;right: 0;">
+                    <span style="margin-right: 10px;color: #fff;">5 articles</span>
+                </div>
+
+                <div {% if user.is_authenticated %}data-url="{% url 'boutique:ajoute' produit.slug %}" {% else %}data-url="{% url 'clients:login' %}" {% endif %}
+                    style=" font-size: 32px; display: flex; position: absolute;left: 0;top: 0;height: 32px; width: 100%;align-items: center;justify-content: flex-end;"
+                    onclick="addToCart(this)">
+                    <button
+                        style="background-color: #fff;color: #E2831D; font-size: 20px; height: 32px;width: 32px;border: 2px solid #fff;border-radius: 12px;">
+                        <i class="fa-solid fa-cart-plus"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="p-bottom">
+                <div>
+                    <p>{{produit.titre}}</p>
+                </div>
+                <div style="display: flex;flex-direction: row;align-items: center;gap: 10px;">
+                    <p style="font-size: 12px;">Prix: <span>{{produit.prix}}</span><span>Dh</span></p>
+                </div>
+                <div onclick="addToCart(this)" {% if user.is_authenticated %}data-url="{% url 'boutique:commande' produit.identifiant %}" {% else %}data-url="{% url 'clients:login' %}" {% endif %}
+                    style="display: flex;flex-direction: row;align-items: center;">
+
+                    <button
+                        style="border-radius: 5px; box-shadow: 0px 2px 4px rgb(0, 0, 0, 0.3); justify-content: center;height: 32px;width: 32px; background-color: green; display: flex;align-items: center;border: 1px solid #ccc;">
+                        <i style="color: #fff;font-size: 24px;" class="fa-brands fa-whatsapp"></i>
+                    </button>
+
+                    <div
+                        style="box-shadow: 0px 2px 4px rgb(0, 0, 0, 0.3); color: #fff;color: green; border: 1px solid green; border-bottom-right-radius: 5px;border-top-right-radius: 5px; font-size: 14px; padding: 0px 5px; border: 1px solid #ccc;border-left: none;height: 25px;display: flex;align-items: center;width: 100px;">
+                        <span>Commander</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<style>
+    @media (max-width: 720px) {
+        .produit {
+            width: 195px;
+        }
+    }
+
+    @media (max-width: 375px) {
+        .produit {
+            width: 170px;
+        }
+    }
+</style>
+
+<script>
+    function addToCart(elem) {
+        const url = elem.dataset.url;
+        if (url) {
+            window.location.href = url;
+        }
+    }
+</script>
+{% endblock %}

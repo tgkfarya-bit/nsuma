@@ -1,0 +1,231 @@
+{% extends 'boutique.html' %}
+{% load static %}
+
+
+{% block filter %}
+
+{% endblock %}
+
+
+{% block content %}
+<style>
+    .vue-produit-panier{
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    #main{
+        margin-top: 50px;
+    }
+    .add-produit{
+        height: 80px;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+        width: 95%;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+    }
+    .img-add-prod{
+        height: 70px;
+        width: 70px;
+        border: none;
+        background-color: #fff;
+        border-radius: 12px;
+        margin-left: 3px;
+        overflow: hidden;
+    }
+    .pan{
+        display: none;
+    }
+    .info-page{
+        height: 50px;
+        width: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+    }
+</style>
+<div class="vue-produit-panier">
+
+<div class="info-page">
+    <div onclick="addToCart(this)" data-url="{% url 'boutique:boutique' %}" style="margin-left: 10px;height: 24px;width: 24px;display: flex;align-items: center;justify-content: center;background-color: #ccc;border-radius: 8px;">
+        <i class="fa-solid fa-arrow-left"></i>
+    </div>
+    <div>
+        <h4>Panier</h4>
+    </div>
+    {% if panier %} 
+    <div style="color: #fff;background-color: #E2831D; border-radius: 8px; margin-right: 10px;height: 24px;width: 24px;display: flex;align-items: center;justify-content: center;">
+        <i class="fa-solid fa-basket-shopping"></i>
+    </div>
+    {% endif %}
+</div>
+
+<style>
+    .m-in{
+        border-radius: 4px;
+        display: flex;
+        font-size: 12px;
+        align-items: center;
+        justify-content: center;
+        width: 20px;
+        height: 20px;
+        background-color: #ccc;
+    }
+    .close-prix{
+        margin-right: 10px;
+        border-radius: 8px; 
+        height: 24px;
+        width: 24px;
+        background-color: #ccc;
+        box-shadow: 0px 2px 4px rgba(0,0,0,0.3);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    .read-qt{
+        outline: none;
+        border: none;
+        border-radius: 5px; 
+        width: 40px;height: 20px; 
+        text-align: center;
+    }
+    .m-n{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap:5px;
+        
+    }
+    .t-p{
+        margin-bottom: 5px;
+    }
+    .inf{
+        width: 67%;
+        margin-left: 10px;
+    }
+</style>
+
+{% if panier %} 
+    {%for produit in panier.produits.all %}
+    <div class="add-produit">
+
+        <div class="img-add-prod" onclick="addToCart(this)" data-url="{% url 'boutique:details' produit.slug %}">
+            <img style="object-fit: cover;" width="100%" height="100%" src="{{produit.image.url}}" alt="" srcset="">
+        </div>
+
+        <div class="inf">
+            <div class="t-p">
+                <h3 style="font-size: 14px;">{{produit.titre}}</h3>
+                <p style="font-size: 14px;"><span>{{produit.prix}}</span><span style="font-size: 12px;margin-left: 5px;">DH</span></p>
+            </div> 
+            <div class="m-n">
+                <div class="m-in" onclick="add_prod(this)" data-price="{{produit.prix}}"  data-card="{{produit.identifiant}}"><i class="fa-solid fa-plus"></i></div>
+                <input readonly  type="number" min="1" name="" id="{{produit.identifiant}}" value="1" class="read-qt" >
+                <div class="m-in" onclick="minus_prod(this)" data-price="{{produit.prix}}" data-card="{{produit.identifiant}}"><i class="fa-solid fa-minus"></i></div>
+            </div>
+        </div>
+
+        <div onclick="addToCart(this)" data-url="{% url 'boutique:delete_produit' panier.identifiant produit.slug %}"  class="close-prix">
+            <span style="font-size: 24px;">&times;</span>
+        </div>
+    </div>
+{% endfor %}
+<style>
+    .info-commande{
+        height: 150px;
+        width: 95%;
+        margin-bottom: 12px;
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        box-shadow: 0px 0px 4px rgb(0, 0, 0, 0.3);
+        position: relative;
+        justify-content: center;
+    }
+</style>
+<div class="info-commande">
+    <div style="position: absolute;left: 10px;top: 10px; width: 100%; display: flex;justify-content: flex-start;flex-direction: row;">
+        <h4>Panier Total</h4>
+    </div>
+
+    <div>
+        <h3 style="font-size: 24px;"><span style="margin-right: 5px;" id="total_panier">{{total}}</span>DH</h3>
+    </div>
+
+    <div onclick="addToCart(this)" data-url="{% url 'boutique:send_commande' %}" style="position: absolute;bottom: 10px;left: 0px;width: 100%;display: flex;align-items: center;justify-content: center;">
+        <Button style="box-shadow: 0px 0px 8px green; border-radius: 8px;border: 1px solid green;background-color: green;color: #fff; height: 40px;width: 95%;display: flex;gap: 10px;align-items: center;justify-content: center;"><span><i style="font-size: 24px;" class="fa-brands fa-whatsapp"></i></span><span style="font-size: 16px;font-weight: 500;">Commander</span></Button>
+    </div>
+
+</div>
+<div onclick="addToCart(this)" data-url="{% url 'boutique:delete' panier.identifiant %}" style="width: 100%;display: flex;align-items: center;justify-content: center;">
+    <button style="height: 40px;width: 90%;border-radius: 8px;border:1px solid #E2831D;font-size: 16px;font-weight: 500;color: #E2831D;background-color: #fff;">Supprimer le panier</button>
+</div>
+{% endif %} 
+</div>
+
+
+<style>
+    @media (max-width: 720px) {
+        .produit {
+            width: 195px;
+        }
+    }
+
+    @media (max-width: 375px) {
+        .produit {
+            width: 170px;
+        }
+    }
+</style>
+
+<script>
+    function addToCart(elem) {
+        const url = elem.dataset.url;
+        if (url) {
+            window.location.href = url;
+        }
+    }
+
+   
+    function add_prod(btn) {
+    const card = btn.dataset.card;
+    const price = parseFloat(btn.dataset.price);
+    if (card) {
+        let input = document.getElementById(card);
+        let value = parseInt(input.value) || 0; 
+        input.value = value + 1;
+
+        const val = document.getElementById('total_panier').textContent;
+        document.getElementById('total_panier').innerText = parseFloat(val)+price;
+    }
+    
+}
+
+function minus_prod(btn) {
+    const card = btn.dataset.card;
+    const price = parseFloat(btn.dataset.price);
+    if (card) {
+        let input = document.getElementById(card);
+        let value = parseInt(input.value) || 0;
+        if (value > 1) {  
+            input.value = value - 1;
+            const val = document.getElementById('total_panier').textContent;
+            document.getElementById('total_panier').innerText = parseFloat(val)-price;
+        }
+        
+        
+    }
+}
+
+
+</script>
+{% endblock %}

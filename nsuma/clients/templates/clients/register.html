@@ -1,0 +1,94 @@
+{% extends 'clients/bas_connexion.html' %}
+{% load static %}
+
+{% block form %}
+<style>
+    #form-login {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 100%;
+    }
+    .main-log{
+        background-color: #201DE2;
+    }
+    .ma{
+        color: #E2831D;
+    }
+    .ico-logo{
+        color: #E2831D;
+    }
+</style>
+<div style="width: 100%;height: 100%;padding: 12px;display: flex;flex-direction: column;align-items: center;">
+    <div style="width: 100%;margin: 10px;">
+        <h3 style="margin-left: 25px;">Enregistrement</h3>
+    </div>
+    <form class="formulaire" id="form-login" action="{% url 'clients:register' %}" method="POST">
+        {% csrf_token %}
+        <style>
+            .in-p {
+                width: 90%;
+                height: 32px;
+                border: 1px solid #ccc;
+                border-radius: 12px;
+                input {
+                    height: 100%;
+                }
+            }
+        </style>
+        <div style="display: flex;flex-direction: column;align-items: center;gap: 10px;width: 100%;">
+            <div style="gap: 5px; border-radius: 12px;width: 90%;display: flex;flex-direction: column;">
+                <label for="">Adresse email <span style="color: red;">*</span></label>
+                <div style="overflow: hidden; border: 1px solid #ccc;border-radius: 12px;align-items: center; display: flex;flex-direction: row;height: 40px;gap: 5px;padding: 0px 5px;">
+                    <input name="email" style="border: none;outline: none; height: 100%;width: 100%;"  type="email" required>
+                </div>
+            </div>
+            <div style="gap: 5px; border-radius: 12px;width: 90%;display: flex;flex-direction: column;">
+                <label for="">Mot de passe <span style="color: red;">*</span></label>
+                <div style="overflow: hidden; border: 1px solid #ccc;border-radius: 12px;align-items: center; display: flex;flex-direction: row;height: 40px;gap: 5px;padding: 0px 5px;">
+                    <input id="passe_me" minlength="8" maxlength="8" name="password" style="border: none;outline: none; height: 100%;width: 100%;"  type="password" required>
+                    <span onclick="view_password(this)" ><i id="eye_icon" class="fa-solid fa-eye-slash"></i></span>
+                </div>
+            </div>
+            
+        </div>
+        <style>
+            #sum {
+                width: 100%;
+                border-radius: 12px;
+                height: 100%;
+                border: 1px solid #ccc;
+                font-size: 16px;
+                font-weight: bold;
+            }
+        </style>
+        
+        <div style="width: 90%;padding: 12px;height: 45px;margin-top: 10px;">
+            <button class="soumettre" style="color: #fff;background-color: #E2831D;" type="submit" id="sum">Enregistrer</button>
+        </div>
+    </form>
+    <div onclick="naveTo(this)" data-url="{% url 'clients:login' %}">
+        <span style="font-size: 12px;">vous avez un compte?<span style="font-weight: bold;">se connecter</span></span>
+    </div>
+</div>
+
+<script>
+let open_view = false;
+const passe_me = document.getElementById('passe_me');
+const eye_icon = document.getElementById('eye_icon');
+
+function view_password(btn) {
+    if (open_view) {
+        passe_me.type = "password";
+        eye_icon.classList.remove("fa-eye");
+        eye_icon.classList.add("fa-eye-slash");
+        open_view = false;
+    } else {
+        passe_me.type = "text";
+        eye_icon.classList.remove("fa-eye-slash");
+        eye_icon.classList.add("fa-eye");
+        open_view = true;
+    }
+}
+</script>
+{% endblock %}

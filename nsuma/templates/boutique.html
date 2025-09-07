@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    {% block styles %}
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    {% endblock %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block titre %}{% endblock %}</title>
+</head>
+
+<body>
+    <style>
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+        }
+
+        * {
+            margin: 0px;
+            padding: 0px;
+            cursor: default;
+        }
+
+        .head-der {
+            background-color: #fff;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            color: #fff;
+            height: 50px;
+            background-color: #E2831D;
+        }
+
+        .item-nav {
+            display: flex;
+            flex-direction: row;
+            gap: 2px;
+            align-items: center;
+        }
+
+        .in-nav {
+            position: fixed;
+            top: 0px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            left: 0px;
+            width: 100%;
+            z-index: 999;
+        }
+    </style>
+    <div class="in-nav">
+        <header class="head-der">
+            <nav class="nav" >
+                <div
+                    style="display: flex;flex-direction: row;align-items: center;justify-content: space-between;width: 100%;padding: 0px 12px;">
+                    <div class="item-nav" data-url="{% url 'boutique:boutique' %}" onclick="naveTo(this)">
+                        <div
+                            style="width: 20px;width: 20px;padding: 5px;background-color: #fff;border-radius: 8px;color: #201DE2;align-items: center;justify-content: center;display: flex;">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                        </div>
+                        <div style="font-weight: bold;"><span>nsu</span><span style="color: #201DE2;">ma</span></div>
+                    </div>
+
+                    <div class="item-nav" data-url="{% url 'clients:login' %}" onclick="naveTonext(this)">
+                        <i class="fa-solid fa-circle-user"></i>
+                        <style>
+                            a{
+                                text-decoration: none;
+                                color: #fff;
+                                font-weight: bold;
+                            }
+                        </style>
+                        <div style="font-size: 12px;">
+                            {% if user.is_authenticated %}
+                            <a href="{% url 'clients:logout' %}">Deconnexion</i></a>
+                            {% else %}
+                            <a href="{% url 'clients:login' %}">Connexion</a>
+                            {% endif %}
+                        </div>
+
+                    </div>
+                </div>
+            </nav>
+            {% block filter %}
+
+            {% endblock %}
+        </header>
+
+        <script>
+            function naveTonext(btn) {
+                const url = btn.dataset.url;
+                if (url) {
+                    window.location.href = url;
+                }
+            }
+        </script>
+    </div>
+
+    <style>
+        #main {
+            width: 100%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 220px;
+        }
+    </style>
+    <main id="main">
+        {% block content %}
+        {% endblock %}
+    </main>
+
+    <style>
+        .pan {
+            height: 64px;
+            width: 64px;
+            position: fixed;
+            bottom: 50px;
+            right: 20px;
+        }
+    </style>
+
+    {% if user.is_authenticated %}
+    
+    {% if panier %}
+    <div class="pan" onclick="addToCart(this)" data-url="{% url 'boutique:panier'%}">
+        <button
+            style="position: relative; background-color:#fff; width: 100%;height: 100%;border-radius: 18px;border: 1px solid #ccc;box-shadow: 0px 2px 4px rgb(226, 131, 29,0.3);">
+            <span
+                style="border-radius: 8px;height: 16px;width: 16px; position: absolute;top: 1px;left: 25px;margin-top: 8px;border: 1px solid #fff;color: #fff;background-color: #E2831D;font-size: 12px;">{{panier.produits.count}}</span>
+            <i style="font-size: 24px;color:black;" class="fa-solid fa-cart-shopping"></i>
+        </button>
+    </div>
+    {% endif %}
+    {% endif %}
+</body>
+<script>
+    function naveTo(btn) {
+        const url = btn.dataset.url;
+        if (url) {
+            window.location.href = url;
+        }
+    }
+</script>
+
+</html>

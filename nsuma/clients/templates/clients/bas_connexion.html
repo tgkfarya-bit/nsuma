@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+{% load static %}
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% block styles %}
+    <link href="{% static 'fontawesomefree/css/fontawesome.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/brands.css' %}" rel="stylesheet" type="text/css">
+    <link href="{% static 'fontawesomefree/css/solid.css' %}" rel="stylesheet" type="text/css">
+    {% endblock %}
+    <title>{% block title %}{% endblock %}</title>
+</head>
+<body>
+    <style>
+        *{
+            margin: 0px;
+            padding: 0px;
+        }
+        input:focus{
+            outline: none;
+            box-shadow: none;
+        }
+        input {
+            background-color: white !important; 
+            -webkit-box-shadow: 0 0 0px 1000px white inset !important;
+            -webkit-text-fill-color: #000 !important; 
+        }
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+            font-family: ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", Segoe UI Symbol, "Noto Color Emoji";
+        }
+        body {
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            overflow-x: none;
+        }
+
+        ::-webkit-scrollbar {
+            display: none;
+        }
+        .main-log{
+            background-color: #E2831D;
+            width: 100%;
+            height: 100dvh;
+            position: relative;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+        }
+        .el{
+            width: 100%;
+            height: 350px;
+            position: absolute;
+            left: 0px;
+            bottom: 0px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+        }
+        .sub-el{
+            background-color: #fff;
+            width: 95%;
+            height: 95%;
+            border-radius: 50px;
+            box-shadow: 0px -14px 4px rgba(255,255,255,0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            overflow: hidden;
+        }
+        .logo{
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+            margin-top: 100px;
+        }
+        .ico{
+            width: 64px;height: 64px;background-color: #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+            box-shadow: 0px 0px 20px rgba(255,255,255,0.3);
+        }
+        .ma{
+            color: #201DE2;
+        }
+        .ico-logo{
+            color: #201DE2;
+        }
+    </style>
+    <main class="main-log">
+        <div class="logo" data-url="{% url 'boutique:boutique' %}" onclick="naveTo(this)">
+            <div class="ico">
+                <i style="font-weight: bold;font-size: 32px;" class="fa-solid fa-bag-shopping ico-logo"></i>
+            </div>
+            <div style="font-size: 16px;">
+                <span style="font-weight: bold;color: #fff;">nsu</span><span class="ma" style="font-weight: bold;">ma</span>
+            </div>
+        </div>
+        <div class="el">
+            <div class="sub-el">
+                {% block form %}
+                {% endblock %}
+            </div>
+        </div>
+    </main>
+
+    <script>
+    function naveTo(btn) {
+        const url = btn.dataset.url;
+        if(url){
+            window.location.href = url;
+        }
+    }
+    const form =  document.querySelector('formulaire');
+    const submitBtn = document.querySelector('soumettre');
+    form.addEventListener("submit", function() {
+        submitBtn.disabled = true;
+    });
+</script>
+</body>
+</html>
